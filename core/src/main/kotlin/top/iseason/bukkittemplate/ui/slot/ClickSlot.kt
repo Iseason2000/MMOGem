@@ -5,6 +5,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import top.iseason.bukkittemplate.ui.container.BaseUI
 import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.checkAir
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 /**
@@ -54,6 +55,9 @@ abstract class ClickSlot(
      * 是否异步点击 只对 onClicked 有效
      */
     var asyncClick = false
+
+    @Volatile
+    override var lock: Boolean = false
 }
 
 /**

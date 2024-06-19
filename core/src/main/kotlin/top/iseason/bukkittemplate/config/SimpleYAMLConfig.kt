@@ -177,7 +177,8 @@ open class SimpleYAMLConfig(
         }
         try {
             onLoaded(config)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         if (notify)
             info(notifyMessage.format(configPath.name))

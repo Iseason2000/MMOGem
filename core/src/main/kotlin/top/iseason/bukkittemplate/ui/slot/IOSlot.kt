@@ -15,7 +15,6 @@ open class IOSlot(
     //没有物品时的占位符
     placeholder: ItemStack?
 ) : ClickSlot(placeholder, index) {
-
     var placeholder: ItemStack?
         get() = rawItemStack
         set(value) {
@@ -75,23 +74,22 @@ open class IOSlot(
         val itemStack = itemStack
         if (itemStack != null && output(this, itemStack)) {
             humanEntity.giveItems(itemStack)
-            submit {
-                onOutput(this@IOSlot, itemStack)
-            }
             reset()
-        }
+            onOutput(this@IOSlot, itemStack)
+        } else reset()
     }
 
     /**
      * 直接把物品给某人，不触发别的事件
      */
-    fun ejectSilently(humanEntity: HumanEntity) {
+    open fun ejectSilently(humanEntity: HumanEntity) {
         val itemStack = itemStack
         if (itemStack != null && output(this, itemStack)) {
             humanEntity.giveItems(itemStack)
-            reset()
         }
+        reset()
     }
+
     override fun reset() {
         itemStack = null
     }

@@ -6,11 +6,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.*
 import org.bukkit.event.inventory.InventoryAction.*
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import top.iseason.bukkittemplate.DisableHook
@@ -86,7 +83,10 @@ object UIListener : Listener {
         }
         var isCancelled = false
         val rawSlot = event.rawSlot
-
+        if (event.action == COLLECT_TO_CURSOR) {
+            event.isCancelled = true
+            return
+        }
         val clickedClickSlot: ClickSlot? = baseUI.getSlot(rawSlot) as? ClickSlot
 
         // 上下锁
@@ -118,7 +118,11 @@ object UIListener : Listener {
 
     @EventHandler
     fun onInventoryDragEvent(event: InventoryDragEvent) {
-        runCatching { event.ioEvent() }.getOrElse { it.printStackTrace() }
+        if (BaseUI.fromInventory(event.inventory) != null) {
+            event.isCancelled = true
+            return
+        }
+//        runCatching { event.ioEvent() }.getOrElse { it.printStackTrace() }
     }
 
 }
@@ -272,8 +276,13 @@ fun InventoryClickEvent.ioEvent() {
         //不只是输入，也有输出
         SWAP_WITH_CURSOR -> {
             if (rawSlot in 0 until inventory.size) {
-                outputItem = Pair(rawSlot, currentItem!!.clone())
-                inputItem = Pair(rawSlot, cursor!!.clone())
+                val clone1 = currentItem!!.clone()
+                val clone2 = cursor!!.clone()
+                outputItem = Pair(rawSlot, clone1)
+                inputItem = Pair(rawSlot, clone2)
+                if (click == ClickType.RIGHT && !clone1.isSimilar(clone2)) {
+                    clone2.amount = 1
+                }
             } else {
                 inputItem = null
                 outputItem = null
@@ -337,17 +346,19 @@ fun InventoryClickEvent.ioEvent() {
         }
         //2个应该是同一个
         val slot = baseUI.getSlot(inputItem.first) as? IOSlot
+
 //        val outputSlot = baseUI.getSlot(outputItem.first) as? IOSlot
         //有一个不通过就取消
         if (slot != null) {
+            if (slot.lock) {
+                isCancelled = true
+                return
+            }
             val isPlaceholder = outputItem.second.isSimilar(slot.placeholder)
+            var output = false
             if (!isPlaceholder) {
-                val output = slot.output(slot, outputItem.second)
-                if (output) {
-                    submit {
-                        slot.onOutput(slot, inputItem.second)
-                    }
-                } else {
+                output = slot.output(slot, outputItem.second)
+                if (!output) {
                     isCancelled = true
                     return
                 }
@@ -355,7 +366,17 @@ fun InventoryClickEvent.ioEvent() {
             val input = slot.input(slot, inputItem.second)
             if (input) {
                 if (isPlaceholder) inventory.setItem(slot.index, null)
-                submit { slot.onInput(slot, inputItem.second) }
+                slot.lock = true
+                submit {
+                    try {
+                        inventory.setItem(slot.index, inputItem.second)
+                        if (output) slot.onOutput(slot, outputItem.second)
+                        slot.onInput(slot, inputItem.second)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    slot.lock = false
+                }
             } else {
                 isCancelled = true
                 return
@@ -372,16 +393,26 @@ fun InventoryClickEvent.ioEvent() {
             return
         }
         val slot = baseUI.getSlot(outputItem.first) ?: return
+        if (slot.lock) {
+            isCancelled = true
+            return
+        }
         if (slot is IOSlot) {
             //不允许输出Placeholder
             if (outputItem.second.isSimilar(slot.placeholder)) {
                 setCancel = true
                 slot.itemStack = slot.placeholder
             } else if (slot.output(slot, outputItem.second)) {
+                slot.lock = true
                 submit {
-                    if (inventory.getItem(outputItem.first) == null)
-                        inventory.setItem(outputItem.first, slot.placeholder)
-                    slot.onOutput(slot, outputItem.second)
+                    try {
+                        if (inventory.getItem(outputItem.first) == null)
+                            inventory.setItem(outputItem.first, slot.placeholder)
+                        slot.onOutput(slot, outputItem.second)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    slot.lock = false
                     //设回PlaceHolder
                 }
             } else setCancel = true
@@ -394,13 +425,22 @@ fun InventoryClickEvent.ioEvent() {
             return
         }
         val slot = baseUI.getSlot(inputItem.first) ?: return
-
+        if (slot.lock) {
+            isCancelled = true
+            return
+        }
         if (slot is IOSlot && slot.input(slot, inputItem.second)) {
+            slot.lock = true
             //能够仅输入的必不存在placeHolder
 //            if (baseUI.inventory.getItem(ioSlot.index)?.isSimilar(ioSlot.placeholder) == true)
 //                ioSlot.itemStack = null
             submit {
-                slot.onInput(slot, inputItem.second)
+                try {
+                    slot.onInput(slot, inputItem.second)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                slot.lock = false
             }
         } else setCancel = true
     }

@@ -4,6 +4,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import top.iseason.bukkittemplate.ui.container.BaseUI
 import top.iseason.bukkittemplate.ui.container.UIContainer
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 一个物品槽
@@ -35,6 +36,8 @@ interface BaseSlot {
      */
     fun reset()
 
+
+     var lock : Boolean
 
 }
 

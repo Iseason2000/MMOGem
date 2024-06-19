@@ -5,6 +5,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.checkAir
+import java.util.concurrent.atomic.AtomicBoolean
 
 open class Icon(
     var rawItemStack: ItemStack,
@@ -60,6 +61,9 @@ open class Icon(
         set(value) {
             itemMeta = itemMeta.apply { lore = value }
         }
+
+    @Volatile
+    override var lock: Boolean = false
 
     override fun reset() {
         itemStack = rawItemStack

@@ -4,6 +4,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://nexus.phoenixdevt.fr/repository/maven-public/")
+    }
 }
 
 dependencies {
@@ -17,7 +20,9 @@ dependencies {
 
     // 本地依赖放在libs文件夹内
     compileOnly(fileTree("libs") { include("*.jar") })
-
+    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT") { isTransitive = false }
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") { isTransitive = false }
 }
 
 // 插件名称，请在gradle.properties 修改
@@ -47,11 +52,13 @@ val obfuscatedMainClass =
 val isObfuscated = obfuscated == "true"
 val shrink: String by rootProject
 val defaultFile = File("../build", "${rootProject.name}-${rootProject.version}.jar")
+
+val formatJarOutput = jarOutputFile.replace("\${root}", rootProject.projectDir.absolutePath)
 val output: File =
     if (isObfuscated)
-        File(jarOutputFile, "${rootProject.name}-${rootProject.version}-obfuscated.jar").absoluteFile
+        File(formatJarOutput, "${rootProject.name}-${rootProject.version}-obfuscated.jar").absoluteFile
     else
-        File(jarOutputFile, "${rootProject.name}-${rootProject.version}.jar").absoluteFile
+        File(formatJarOutput, "${rootProject.name}-${rootProject.version}.jar").absoluteFile
 
 tasks {
     shadowJar {

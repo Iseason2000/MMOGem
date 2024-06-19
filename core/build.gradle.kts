@@ -24,7 +24,8 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
-    compileOnly("net.Indyuce:MMOItems-API:6.9.4-SNAPSHOT") { isTransitive = false }
+    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT") { isTransitive = false }
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1") { isTransitive = false }
     compileOnly("io.th0rgal:oraxen:1.175.0") { isTransitive = false }
 }

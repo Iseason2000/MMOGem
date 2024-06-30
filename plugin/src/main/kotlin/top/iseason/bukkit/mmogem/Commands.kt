@@ -2,6 +2,7 @@ package top.iseason.bukkit.mmogem
 
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
+import top.iseason.bukkit.mmogem.ui.DecomposeUI
 import top.iseason.bukkit.mmogem.ui.ExpandUI
 import top.iseason.bukkit.mmogem.ui.InlayUI
 import top.iseason.bukkit.mmogem.ui.RebuildUI
@@ -48,6 +49,19 @@ fun command() {
             executor { _, sender ->
                 val player = sender as Player
                 val build = RebuildUI(player).build()
+                submit {
+                    player.openInventory(build)
+                }
+            }
+        }
+        node("decompose") {
+            description = "物品分解"
+            default = PermissionDefault.TRUE
+            async = true
+            isPlayerOnly = true
+            executor { _, sender ->
+                val player = sender as Player
+                val build = DecomposeUI(player).build()
                 submit {
                     player.openInventory(build)
                 }

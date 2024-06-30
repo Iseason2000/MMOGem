@@ -1,4 +1,4 @@
-package top.iseason.bukkit.mmogem
+package top.iseason.bukkit.mmogem.config
 
 import io.lumine.mythic.lib.UtilityMethods
 import org.bukkit.Material
@@ -14,6 +14,16 @@ import top.iseason.bukkittemplate.utils.bukkit.ItemUtils
 import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.item
 import java.util.ArrayList
 import java.util.HashSet
+import kotlin.apply
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.set
+import kotlin.collections.toIntArray
+import kotlin.collections.toTypedArray
+import kotlin.text.split
+import kotlin.text.toInt
+import kotlin.text.trim
+import kotlin.to
 
 @FilePath("config.yml")
 object Config : SimpleYAMLConfig() {
@@ -89,7 +99,7 @@ object Config : SimpleYAMLConfig() {
     var expandGemMaterials = emptyMap<String, Pair<Int, String>>()
 
     override fun onLoaded(section: ConfigurationSection) {
-        val hashMap = HashMap<String, Pair<String, Int>>()
+        val hashMap = java.util.HashMap<String, Pair<String, Int>>()
         for ((key, data) in removeGemMaterialsSection.getValues(false)) {
             val s = data as String
             val split = s.split(",", limit = 2)
@@ -99,7 +109,7 @@ object Config : SimpleYAMLConfig() {
         }
         removeGemMaterials = hashMap
 
-        val hashMap2 = HashMap<String, Pair<Int, String>>()
+        val hashMap2 = java.util.HashMap<String, Pair<Int, String>>()
         for ((key, data) in expandGemMaterialsSection.getValues(false)) {
             val s = data as String
             val split = s.split(",", limit = 2)
@@ -108,7 +118,7 @@ object Config : SimpleYAMLConfig() {
         }
         expandGemMaterials = hashMap2
 
-        val hashMap3 = HashMap<String, RebuildConfig>()
+        val hashMap3 = java.util.HashMap<String, RebuildConfig>()
         for (name in rebuildAvailableSection) {
             val normalStr = rebuildMaterialsSection.getString("$name.normal") ?: defaultRebuildMaterialsSection
             val normalSplit = normalStr.split(",", limit = 2)
@@ -128,7 +138,7 @@ object Config : SimpleYAMLConfig() {
 
     }
 
-    val empty: Pair<IntArray, HashMap<String, ItemStack>> = Pair(IntArray(0), HashMap())
+    val empty: Pair<IntArray, HashMap<String, ItemStack>> = Pair(IntArray(0), java.util.HashMap())
 
     /**
      * 读取槽
@@ -143,7 +153,7 @@ object Config : SimpleYAMLConfig() {
             slots = IntArray(1)
             slots[0] = slotsStr.toInt()
         }
-        val map = HashMap<String, ItemStack>()
+        val map = java.util.HashMap<String, ItemStack>()
         section.getValues(false).forEach { (key, cfg) ->
             if (cfg !is ConfigurationSection) return@forEach
             val item = ItemUtils.fromSection(cfg) ?: Material.AIR.item

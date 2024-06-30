@@ -3,13 +3,13 @@ package top.iseason.bukkit.mmogem
 import net.Indyuce.mmoitems.ItemStats
 import net.Indyuce.mmoitems.MMOItems
 import net.Indyuce.mmoitems.api.Type
-import net.Indyuce.mmoitems.api.player.PlayerData
 import net.Indyuce.mmoitems.stat.type.NameData
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import top.iseason.bukkit.mmogem.config.Config
 import top.iseason.bukkit.mmogem.stat.RebuildTimes
 import top.iseason.bukkit.mmogem.ui.ExpandUIConfig
-import top.iseason.bukkit.mmogem.ui.InlayUIConfig
+import top.iseason.bukkit.mmogem.ui.DecomposeUIConfig
 import top.iseason.bukkit.mmogem.ui.RebuildUIConfig
 import top.iseason.bukkittemplate.BukkitPlugin
 import top.iseason.bukkittemplate.command.CommandHandler
@@ -34,7 +34,8 @@ object MMOGem : BukkitPlugin {
         UIListener.registerListener()
         Lang.load()
         Config.load()
-        InlayUIConfig.load()
+        DecomposeConfig.load()
+        DecomposeUIConfig.load()
         ExpandUIConfig.load()
         RebuildUIConfig.load()
 

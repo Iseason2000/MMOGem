@@ -24,12 +24,12 @@ import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.applyMeta
 import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.item
 import top.iseason.bukkittemplate.utils.bukkit.ItemUtils.toSection
 
-@FilePath("ui/inlay.yml")
-object InlayUIConfig : SimpleYAMLConfig() {
+@FilePath("ui/decompose.yml")
+object DecomposeUIConfig : SimpleYAMLConfig() {
 
     @Key
     @Comment("ui标题")
-    var title = "宝石镶嵌"
+    var title = "物品分解"
 
     @Key
     @Comment("ui行数")
@@ -51,37 +51,42 @@ object InlayUIConfig : SimpleYAMLConfig() {
     var background: Array<Pair<Int, ItemStack>> = emptyArray()
 
     @Key("input")
-    @Comment("工具输入槽，只能有一个")
+    @Comment("输入槽")
     var inputSection: MemorySection = YamlConfiguration().apply {
-        set("slot", "13")
+        set("slots", "11,12,13,14,15")
         set("default", Material.RED_STAINED_GLASS_PANE.item.applyMeta {
-            setDisplayName("${ChatColor.RED} 请放入待强化的物品")
+            setDisplayName("${ChatColor.RED} 请放入待分解的物品")
         }.toSection())
     }
 
     var input: Pair<IntArray, HashMap<String, ItemStack>> = Config.empty
 
-    @Key("gem-slots")
-    @Comment("宝石槽-空")
-    var slotsSection: MemorySection = YamlConfiguration().apply {
-        set("slots", "19,20,21,22,23")
-        set("default", Material.RED_STAINED_GLASS_PANE.item.applyMeta {
-            setDisplayName("${ChatColor.RED} 请放入待强化的物品")
+
+    @Key("button")
+    @Comment("分解按钮")
+    var buttonSection: MemorySection = YamlConfiguration().apply {
+        set("slots", "31")
+        set("default", Material.ANVIL.item.applyMeta {
+            setDisplayName("${ChatColor.RED} 请放入材料")
         }.toSection())
-        set("available", Material.RED_STAINED_GLASS_PANE.item.applyMeta {
-            setDisplayName("${ChatColor.YELLOW} 可镶嵌, 颜色 {color}")
+
+        set("available", Material.ANVIL.item.applyMeta {
+            setDisplayName("${ChatColor.RED} 点击分解")
         }.toSection())
     }
-
-    var slots: Pair<IntArray, HashMap<String, ItemStack>> = Config.empty
+    var button: Pair<IntArray, HashMap<String, ItemStack>> = Config.empty
 
     @Key("material")
-    @Comment("材料槽")
+    @Comment("材料预览槽")
     var materialSection: MemorySection = YamlConfiguration().apply {
-        set("slots", "31")
+        set("slots", "38,39,40,41,42")
         set("default", Material.RED_STAINED_GLASS_PANE.item.applyMeta {
-            setDisplayName("${ChatColor.RED} 拆卸宝石请放入材料")
+            setDisplayName("${ChatColor.RED} 请放入待分解的物品")
         }.toSection())
+        set("lore", listOf(
+            "出现概率: {rate} %",
+            "预估数量: {num}"
+        ))
     }
 
     var material: Pair<IntArray, HashMap<String, ItemStack>> = Config.empty
@@ -89,7 +94,7 @@ object InlayUIConfig : SimpleYAMLConfig() {
     override fun onLoaded(section: ConfigurationSection) {
         background = readBackGround(backgroundSection)
         input = readSlot(inputSection)
-        slots = readSlot(slotsSection)
+        button = readSlot(buttonSection)
         material = readSlot(materialSection)
     }
 

@@ -6,9 +6,9 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
-import top.iseason.bukkit.mmogem.Config
-import top.iseason.bukkit.mmogem.Config.readBackGround
-import top.iseason.bukkit.mmogem.Config.readSlot
+import top.iseason.bukkit.mmogem.config.Config
+import top.iseason.bukkit.mmogem.config.Config.readBackGround
+import top.iseason.bukkit.mmogem.config.Config.readSlot
 import top.iseason.bukkittemplate.config.SimpleYAMLConfig
 import top.iseason.bukkittemplate.config.annotations.Comment
 import top.iseason.bukkittemplate.config.annotations.FilePath

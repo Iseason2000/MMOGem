@@ -12,7 +12,7 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import top.iseason.bukkit.mmoforge.uitls.kparser.ExpressionParser
-import top.iseason.bukkit.mmogem.Config
+import top.iseason.bukkit.mmogem.config.Config
 import top.iseason.bukkit.mmogem.Lang
 import top.iseason.bukkit.mmogem.MMOGem
 import top.iseason.bukkit.mmogem.VaultHook.takeMoney
@@ -78,20 +78,17 @@ class RebuildUI(val player: Player) :
                 val typeId = UtilityMethods.enumName("$type:$id")
                 val config = Config.rebuildMaterials[typeId]
                 if (config == null) {
-                    val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__deny, player)
-                    player.sendColorMessage(msg)
+                    player.sendColorMessage(Lang.rebuild__deny)
                     return@inputFilter false
                 }
                 val liveMMOItem = LiveMMOItem(it)
                 val times = (liveMMOItem.getData(RebuildTimes) as? DoubleData)?.value ?: 0.0
                 if (times >= config.guarantee) {
-                    val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__max, player)
-                    player.sendColorMessage(msg)
+                    player.sendColorMessage(Lang.rebuild__max)
                     return@inputFilter false
                 }
                 if (!liveMMOItem.gemstones.isEmpty()) {
-                    val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__has_gem, player)
-                    player.sendColorMessage(msg)
+                    player.sendColorMessage(Lang.rebuild__has_gem)
                     return@inputFilter false
                 }
 
@@ -214,15 +211,12 @@ class RebuildUI(val player: Player) :
                         outputSlot.outputAble(true)
                         outputSlot.isPreview = false
 
-                        val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__success.formatBy(itemName), player)
-                        player.sendColorMessage(msg)
+                        player.sendColorMessage(Lang.rebuild__success.formatBy(itemName))
 
                         if (times >= config.guarantee - 1) {
-                            val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__no_max.formatBy(itemName), player)
-                            player.sendColorMessage(msg)
+                            player.sendColorMessage(Lang.rebuild__no_max.formatBy(itemName))
                         } else if (materialSlot.typeId == config.specialMaterial) {
-                            val msg = PlaceHolderHook.setPlaceHolder(Lang.rebuild__special.formatBy(itemName), player)
-                            player.sendColorMessage(msg)
+                            player.sendColorMessage(Lang.rebuild__special.formatBy(itemName))
                         }
                         reset()
                     }

@@ -15,7 +15,7 @@ import net.Indyuce.mmoitems.stat.type.NameData
 import net.Indyuce.mmoitems.util.MMOUtils
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import top.iseason.bukkit.mmogem.Config
+import top.iseason.bukkit.mmogem.config.Config
 import top.iseason.bukkit.mmogem.Lang
 import top.iseason.bukkit.mmogem.MMOGem.applyPlaceHolder
 import top.iseason.bukkittemplate.hook.PlaceHolderHook
@@ -112,8 +112,7 @@ class InlayUI(val player: Player) :
                 if (this.itemStack != null) return@inputFilter false
                 if (it.amount > 1) {
                     if (EasyCoolDown.check("${player.uniqueId}-ui_inlay", Lang.cooldown)) {
-                        val msg = PlaceHolderHook.setPlaceHolder(Lang.inlay__only_one, player)
-                        player.sendColorMessage(msg)
+                        player.sendColorMessage(Lang.inlay__only_one)
                     }
                     return@inputFilter false
                 }
@@ -134,17 +133,13 @@ class InlayUI(val player: Player) :
                     FAILURE -> true
                     SUCCESS -> {
                         inputSlot.itemStack = applyResult.result
-                        val msg = PlaceHolderHook.setPlaceHolder(Lang.inlay__in_success, player)
-                        player.sendColorMessage(msg)
+                        player.sendColorMessage(Lang.inlay__in_success)
                         true
                     }
 
                     NONE -> {
                         if (EasyCoolDown.check("${player.uniqueId}-ui_inlay", Lang.cooldown)) {
-                            val msg = PlaceHolderHook.setPlaceHolder(
-                                Lang.inlay__none, player
-                            )
-                            player.sendColorMessage(msg)
+                            player.sendColorMessage( Lang.inlay__none)
                         }
                         false
                     }
@@ -171,11 +166,9 @@ class InlayUI(val player: Player) :
                         val t = Type.get(split[0])!!
                         val template = MMOItems.plugin.templates.getTemplate(t, split[1])!!
                         val name = (template.baseItemData[ItemStats.NAME] as NameData).bake()
-                        val msg = PlaceHolderHook.setPlaceHolder(
-                            Lang.inlay__failure
-                                .replace("{num}", need.toString())
-                                .replace("{material}", name), player
-                        )
+                        val msg = Lang.inlay__failure
+                            .replace("{num}", need.toString())
+                            .replace("{material}", name)
                         player.sendColorMessage(msg)
                     }
                 }
@@ -202,10 +195,7 @@ class InlayUI(val player: Player) :
                 val buildSilently = mmo.newBuilder().buildSilently()
                 inputSlot.itemStack = buildSilently
                 inputSlot.onInput.invoke(inputSlot, buildSilently)
-                val msg = PlaceHolderHook.setPlaceHolder(
-                    Lang.inlay__out_success, player
-                )
-                player.sendColorMessage(msg)
+                player.sendColorMessage(Lang.inlay__out_success)
             }
         }
 

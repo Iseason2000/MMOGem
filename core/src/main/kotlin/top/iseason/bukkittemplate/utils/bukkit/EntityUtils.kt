@@ -23,18 +23,15 @@ object EntityUtils {
      * @param itemStacks 待输入的物品
      *
      */
-    fun InventoryHolder.giveItems(itemStacks: Array<ItemStack>) {
-        giveItems(*itemStacks)
-    }
+    fun InventoryHolder.giveItems(itemStacks: Array<ItemStack>): Boolean = giveItems(*itemStacks)
 
     /**
      * 给予有物品栏的对象物品,如果是实体且放不下将会放置到实体脚下
      * @param itemStacks 待输入的物品
      *
      */
-    fun InventoryHolder.giveItems(itemStacks: Collection<ItemStack>) {
+    fun InventoryHolder.giveItems(itemStacks: Collection<ItemStack>): Boolean =
         giveItems(itemStacks.toTypedArray())
-    }
 
     /**
      * 给予有物品栏的对象物品,如果是实体且放不下将会放置到实体脚下
@@ -42,14 +39,17 @@ object EntityUtils {
      *
      */
     @JvmName("giveItemsVararg")
-    fun InventoryHolder.giveItems(vararg itemStacks: ItemStack) {
+    fun InventoryHolder.giveItems(vararg itemStacks: ItemStack): Boolean {
         val addItems = inventory.addItem(*itemStacks).values
-        if (this !is Entity) return
+        if (this !is Entity) return false
+        var isDrop = false
         for (addItem in addItems) {
             if (addItem == null) continue
             val item = world.spawnEntity(location, EntityType.entries[1]) as Item //1.20.6改了枚举名 目前看来1号都是掉落物
             item.setItemStack(addItem)
+            isDrop = true
         }
+        return isDrop
     }
 
     /**

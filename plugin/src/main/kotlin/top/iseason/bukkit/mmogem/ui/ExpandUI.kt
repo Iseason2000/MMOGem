@@ -8,7 +8,7 @@ import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem
 import net.Indyuce.mmoitems.stat.data.GemSocketsData
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import top.iseason.bukkit.mmogem.Config
+import top.iseason.bukkit.mmogem.config.Config
 import top.iseason.bukkit.mmogem.Lang
 import top.iseason.bukkittemplate.hook.PlaceHolderHook
 import top.iseason.bukkittemplate.ui.container.ChestUI
@@ -67,8 +67,7 @@ class ExpandUI(val player: Player) :
                 val typeId = UtilityMethods.enumName("$type:$id")
                 val contains = Config.expandGemWhiteList.contains(typeId)
                 if (!contains) {
-                    val msg = PlaceHolderHook.setPlaceHolder(Lang.expand__deny, player)
-                    player.sendColorMessage(msg)
+                    player.sendColorMessage(Lang.expand__deny)
                 }
                 contains
             }
@@ -116,9 +115,7 @@ class ExpandUI(val player: Player) :
                         else materialSlot.itemStack!!.decrease(1)
                         reset()
                         inputSlot.reset()
-                        val msg =
-                            PlaceHolderHook.setPlaceHolder(Lang.expand__success.replace("{color}", color), player)
-                        player.sendColorMessage(msg)
+                        player.sendColorMessage(Lang.expand__success.replace("{color}", color))
 
                     }
 

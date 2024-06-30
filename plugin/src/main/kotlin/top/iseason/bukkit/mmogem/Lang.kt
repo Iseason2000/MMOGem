@@ -29,5 +29,8 @@ object Lang : Lang() {
     var rebuild__success = "{0}物品重塑完成"
     var rebuild__no_money = "金币不够"
 
+    var decompose__success = "&a本次分解获得了 {0}"
+    var decompose__format = " {0} &7 X &a {1};"
+    var decompose__drop = "&c背包已满，待分解物品掉落在地。"
 
 }
